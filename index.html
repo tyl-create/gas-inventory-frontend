@@ -138,6 +138,7 @@
       
       <div class="flex justify-between items-start mb-3 pl-2">
         <h3 class="font-bold text-gray-900 text-lg leading-tight">{{ item.C }}</h3>
+        <p v-if="item.D" class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed">{{ item.D }}</p>
         <div class="flex-shrink-0 ml-2">
           <span v-if="item.AB === '已盤點'" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 shadow-sm">
             <span class="material-icons text-[14px] mr-1">check_circle</span>已盤點
@@ -227,6 +228,9 @@
             <div class="text-indigo-400/80 font-bold">名稱</div>
             <div class="text-gray-800 font-bold">{{ selectedItem.C }}</div>
             
+            <div class="text-indigo-400/80 font-bold">特徵/說明</div>
+            <div class="text-gray-800 text-xs">{{ selectedItem.D || '無' }}</div>
+            
             <div class="text-indigo-400/80 font-bold">地點一</div>
             <div class="text-gray-800">{{ selectedItem.M || '無' }}</div>
             
@@ -248,6 +252,12 @@
             <input type="text" v-model="editForm.modifiedName" 
                    class="w-full p-3 bg-white border border-gray-300 rounded-xl text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all shadow-sm placeholder-gray-300"
                    placeholder="若無修改請維持原狀">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-700 mb-1.5 font-bold pl-1">修正特徵及說明</label>
+            <textarea v-model="editForm.modifiedDesc" rows="2"
+                   class="w-full p-3 bg-white border border-gray-300 rounded-xl text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all shadow-sm placeholder-gray-300"
+                   placeholder="若無修改請維持原狀"></textarea>
           </div>
           <div>
             <label class="block text-sm text-gray-700 mb-1.5 font-bold pl-1">修正地點一</label>
@@ -305,7 +315,8 @@
       const editForm = ref({
         modifiedName: '',
         modifiedLoc1: '',
-        modifiedLoc2: ''
+        modifiedLoc2: '',
+        modifiedDesc: ''
       });
       
       const toast = ref({ show: false, message: '', type: 'success', icon: 'check' });
@@ -323,9 +334,9 @@
         if (GAS_API_URL === "請在此填入部署後的_GAS_API_網址" || GAS_API_URL === "") {
           setTimeout(() => {
             inventoryList.value = [
-              {rowIndex:2, B:'1120101', C:'筆記型電腦 (本機模擬測試)', M:'電腦教室一', N:'櫃子A', AB:'', AE:'', AM:'', AN:'', AO:'', AP:'', AQ:'', AR:''},
-              {rowIndex:3, B:'1120102', C:'投影機', M:'會議室', N:'', AB:'已盤點', AE:'2023/10/01', AM:'王大明', AN:'', AO:'', AP:'', AQ:'', AR:''},
-              {rowIndex:4, B:'1120103', C:'辦公桌', M:'教師辦公室', N:'角落', AB:'', AE:'', AM:'', AN:'', AO:'', AP:'', AQ:'', AR:''}
+              {rowIndex:2, B:'1120101', C:'筆記型電腦 (本機模擬測試)', D:'ASUS, 黑色, 8GB RAM', M:'電腦教室一', N:'櫃子A', AB:'', AE:'', AM:'', AN:'', AO:'', AP:'', AQ:'', AR:''},
+              {rowIndex:3, B:'1120102', C:'投影機', D:'Epson, 吊掛式', M:'會議室', N:'', AB:'已盤點', AE:'2023/10/01', AM:'王大明', AN:'', AO:'', AP:'', AQ:'', AR:''},
+              {rowIndex:4, B:'1120103', C:'辦公桌', D:'木製, 120x60cm', M:'教師辦公室', N:'角落', AB:'', AE:'', AM:'', AN:'', AO:'', AP:'', AQ:'', AR:''}
             ];
             isLoading.value = false;
           }, 1000);
@@ -377,9 +388,10 @@
           list = list.filter(i => {
             const b = i.B ? i.B.toString().toLowerCase() : '';
             const c = i.C ? i.C.toString().toLowerCase() : '';
+            const d = i.D ? i.D.toString().toLowerCase() : '';
             const k = i.M ? i.M.toString().toLowerCase() : '';
             const l = i.N ? i.N.toString().toLowerCase() : '';
-            return b.includes(q) || c.includes(q) || k.includes(q) || l.includes(q);
+            return b.includes(q) || c.includes(q) || d.includes(q) || k.includes(q) || l.includes(q);
           });
         }
         return list;
@@ -469,7 +481,8 @@
         editForm.value = {
           modifiedName: item.C || '',
           modifiedLoc1: item.M || '',
-          modifiedLoc2: item.N || ''
+          modifiedLoc2: item.N || '',
+          modifiedDesc: item.D || ''
         };
       };
 
@@ -490,13 +503,15 @@
         const realModifiedName = form.modifiedName !== oriItem.C ? form.modifiedName : '';
         const realModifiedLoc1 = form.modifiedLoc1 !== oriItem.M ? form.modifiedLoc1 : '';
         const realModifiedLoc2 = form.modifiedLoc2 !== oriItem.N ? form.modifiedLoc2 : '';
+        const realModifiedDesc = form.modifiedDesc !== oriItem.D ? form.modifiedDesc : '';
 
         const updateData = {
           rowIndex: item.rowIndex,
           operatorName: operatorName.value.trim(),
           modifiedName: realModifiedName,
           modifiedLoc1: realModifiedLoc1,
-          modifiedLoc2: realModifiedLoc2
+          modifiedLoc2: realModifiedLoc2,
+          modifiedDesc: realModifiedDesc
         };
 
         isSubmitting.value = true;
@@ -554,6 +569,7 @@
           if (newValues.modifiedName && newValues.modifiedName !== item.C) { item.AO = newValues.modifiedName; item.AQ = 'TRUE'; }
           if (newValues.modifiedLoc1 && newValues.modifiedLoc1 !== item.M) { item.AP = newValues.modifiedLoc1; item.AQ = 'TRUE'; }
           if (newValues.modifiedLoc2 && newValues.modifiedLoc2 !== item.N) { item.AR = newValues.modifiedLoc2; item.AQ = 'TRUE'; }
+          if (newValues.modifiedDesc && newValues.modifiedDesc !== item.D) { item.AS = newValues.modifiedDesc; item.AQ = 'TRUE'; }
           
           // 重新賦值以觸發 Vue 響應式更新
           inventoryList.value[itemIndex] = {...item};
