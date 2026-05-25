@@ -300,10 +300,6 @@
       const currentTab = ref('pending'); // 'all', 'pending', 'done'
       const searchQuery = ref('');
       const showScanner = ref(false);
-      let html5QrcodeScanner = null;
-      
-      const isInIframe = ref(false);
-      const currentUrl = ref('');
       
       const selectedItem = ref(null);
       const editForm = ref({
@@ -445,7 +441,6 @@
         handleScannedCode(decodedText);
       };
 
-      const onScanFailure = (error) => {
       const handleScannedCode = (text) => {
         let code = text;
         if (code.startsWith("888!")) {
@@ -482,7 +477,7 @@
         selectedItem.value = null;
       };
 
-      const confirmEdit = async () => {
+      const submitInventory = async () => {
         const item = selectedItem.value;
         const form = editForm.value;
         const oriItem = inventoryList.value.find(i => i.B === item.B);
