@@ -139,11 +139,11 @@
       <div class="flex justify-between items-start mb-3 pl-2">
         <div class="flex-1 pr-2">
           <h3 class="font-bold text-gray-900 text-lg leading-tight">
-            {{ item.AP || item.C }}
-            <span v-if="item.AP" class="text-xs text-indigo-500 font-normal ml-1 px-1 bg-indigo-50 rounded">已修改</span>
+            {{ item.AQ || item.C }}
+            <span v-if="item.AQ" class="text-xs text-indigo-500 font-normal ml-1 px-1 bg-indigo-50 rounded">已修改</span>
           </h3>
-          <p v-if="item.AS || item.D" class="text-xs text-gray-500 mt-1 leading-relaxed">
-            <span v-if="item.AS" class="text-indigo-400 font-bold mr-1">✏️</span>{{ item.AS || item.D }}
+          <p v-if="item.AT || item.D" class="text-xs text-gray-500 mt-1 leading-relaxed">
+            <span v-if="item.AT" class="text-indigo-400 font-bold mr-1">✏️</span>{{ item.AT || item.D }}
           </p>
         </div>
         <div class="flex-shrink-0 ml-2">
@@ -165,11 +165,11 @@
           <span class="material-icons text-[18px] mr-2 text-red-400 mt-0.5">location_on</span>
           <div>
             <div class="font-medium">
-              <span v-if="item.AQ" class="text-indigo-400 font-bold mr-1 text-xs">✏️</span>{{ item.AQ || item.M || '未設定地點一' }}
+              <span v-if="item.AR" class="text-indigo-400 font-bold mr-1 text-xs">✏️</span>{{ item.AR || item.M || '未設定地點一' }}
             </div>
-            <div v-if="item.AR || item.N" class="text-xs text-gray-500 mt-1 flex items-center">
+            <div v-if="item.AS || item.N" class="text-xs text-gray-500 mt-1 flex items-center">
               <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-1.5"></span>
-              <span v-if="item.AR" class="text-indigo-400 font-bold mr-1 text-xs">✏️</span>{{ item.AR || item.N }}
+              <span v-if="item.AS" class="text-indigo-400 font-bold mr-1 text-xs">✏️</span>{{ item.AS || item.N }}
             </div>
           </div>
         </div>
@@ -241,16 +241,16 @@
             <div class="font-mono font-bold text-indigo-900 tracking-wider">{{ selectedItem.B }}</div>
             
             <div class="text-indigo-400/80 font-bold">名稱</div>
-            <div class="text-gray-800 font-bold">{{ selectedItem.AP || selectedItem.C }}</div>
+            <div class="text-gray-800 font-bold">{{ selectedItem.AQ || selectedItem.C }}</div>
             
             <div class="text-indigo-400/80 font-bold">特徵/說明</div>
-            <div class="text-gray-800 text-xs">{{ selectedItem.AS || selectedItem.D || '無' }}</div>
+            <div class="text-gray-800 text-xs">{{ selectedItem.AT || selectedItem.D || '無' }}</div>
             
             <div class="text-indigo-400/80 font-bold">地點一</div>
-            <div class="text-gray-800">{{ selectedItem.AQ || selectedItem.M || '無' }}</div>
+            <div class="text-gray-800">{{ selectedItem.AR || selectedItem.M || '無' }}</div>
             
             <div class="text-indigo-400/80 font-bold">地點二</div>
-            <div class="text-gray-800">{{ selectedItem.AR || selectedItem.N || '無' }}</div>
+            <div class="text-gray-800">{{ selectedItem.AS || selectedItem.N || '無' }}</div>
           </div>
         </div>
         
@@ -349,9 +349,9 @@
         if (GAS_API_URL === "請在此填入部署後的_GAS_API_網址" || GAS_API_URL === "") {
           setTimeout(() => {
             inventoryList.value = [
-              {rowIndex:2, B:'1120101', C:'筆記型電腦 (本機模擬測試)', D:'ASUS, 黑色, 8GB RAM', M:'電腦教室一', N:'櫃子A', AB:'', AE:'', AM:'', AN:'', AP:'', AQ:'', AO:'', AR:''},
-              {rowIndex:3, B:'1120102', C:'投影機', D:'Epson, 吊掛式', M:'會議室', N:'', AB:'已盤點', AE:'2023/10/01', AM:'王大明', AN:'', AP:'', AQ:'', AO:'', AR:''},
-              {rowIndex:4, B:'1120103', C:'辦公桌', D:'木製, 120x60cm', M:'教師辦公室', N:'角落', AB:'', AE:'', AM:'', AN:'', AP:'', AQ:'', AO:'', AR:''}
+              {rowIndex:2, B:'1120101', C:'筆記型電腦 (本機模擬測試)', D:'ASUS, 黑色, 8GB RAM', M:'電腦教室一', N:'櫃子A', AB:'', AE:'', AM:'', AN:'', AQ:'', AR:'', AP:'', AS:'', AT:''},
+              {rowIndex:3, B:'1120102', C:'投影機', D:'Epson, 吊掛式', M:'會議室', N:'', AB:'已盤點', AE:'2023/10/01', AM:'王大明', AN:'', AQ:'', AR:'', AP:'', AS:'', AT:''},
+              {rowIndex:4, B:'1120103', C:'辦公桌', D:'木製, 120x60cm', M:'教師辦公室', N:'角落', AB:'', AE:'', AM:'', AN:'', AQ:'', AR:'', AP:'', AS:'', AT:''}
             ];
             isLoading.value = false;
           }, 1000);
@@ -494,10 +494,10 @@
         
         selectedItem.value = item;
         editForm.value = {
-          modifiedName: item.AP || item.C || '',
-          modifiedLoc1: item.AQ || item.M || '',
-          modifiedLoc2: item.AR || item.N || '',
-          modifiedDesc: item.AS || item.D || ''
+          modifiedName: item.AQ || item.C || '',
+          modifiedLoc1: item.AR || item.M || '',
+          modifiedLoc2: item.AS || item.N || '',
+          modifiedDesc: item.AT || item.D || ''
         };
       };
 
@@ -515,10 +515,10 @@
           return;
         }
 
-        const realModifiedName = form.modifiedName !== (oriItem.AP || oriItem.C) ? form.modifiedName : '';
-        const realModifiedLoc1 = form.modifiedLoc1 !== (oriItem.AQ || oriItem.M) ? form.modifiedLoc1 : '';
-        const realModifiedLoc2 = form.modifiedLoc2 !== (oriItem.AR || oriItem.N) ? form.modifiedLoc2 : '';
-        const realModifiedDesc = form.modifiedDesc !== (oriItem.AS || oriItem.D) ? form.modifiedDesc : '';
+        const realModifiedName = form.modifiedName !== (oriItem.AQ || oriItem.C) ? form.modifiedName : '';
+        const realModifiedLoc1 = form.modifiedLoc1 !== (oriItem.AR || oriItem.M) ? form.modifiedLoc1 : '';
+        const realModifiedLoc2 = form.modifiedLoc2 !== (oriItem.AS || oriItem.N) ? form.modifiedLoc2 : '';
+        const realModifiedDesc = form.modifiedDesc !== (oriItem.AT || oriItem.D) ? form.modifiedDesc : '';
 
         const updateData = {
           rowIndex: item.rowIndex,
@@ -581,10 +581,10 @@
           item.AM = operatorName.value.trim();
           
           // 如果有異動，也要將異動紀錄寫入本地，讓列表能即時(雖未顯示這些欄位，但可維持資料一致性)
-          if (newValues.modifiedName && newValues.modifiedName !== item.C) { item.AP = newValues.modifiedName; item.AO = 'TRUE'; }
-          if (newValues.modifiedLoc1 && newValues.modifiedLoc1 !== item.M) { item.AQ = newValues.modifiedLoc1; item.AO = 'TRUE'; }
-          if (newValues.modifiedLoc2 && newValues.modifiedLoc2 !== item.N) { item.AR = newValues.modifiedLoc2; item.AO = 'TRUE'; }
-          if (newValues.modifiedDesc && newValues.modifiedDesc !== item.D) { item.AS = newValues.modifiedDesc; item.AO = 'TRUE'; }
+          if (newValues.modifiedName && newValues.modifiedName !== item.C) { item.AQ = newValues.modifiedName; item.AP = 'TRUE'; }
+          if (newValues.modifiedLoc1 && newValues.modifiedLoc1 !== item.M) { item.AR = newValues.modifiedLoc1; item.AP = 'TRUE'; }
+          if (newValues.modifiedLoc2 && newValues.modifiedLoc2 !== item.N) { item.AS = newValues.modifiedLoc2; item.AP = 'TRUE'; }
+          if (newValues.modifiedDesc && newValues.modifiedDesc !== item.D) { item.AT = newValues.modifiedDesc; item.AP = 'TRUE'; }
           
           // 重新賦值以觸發 Vue 響應式更新
           inventoryList.value[itemIndex] = {...item};
